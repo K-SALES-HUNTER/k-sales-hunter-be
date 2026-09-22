@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: k-sales-hunter-be
+
+  datasource:
+    # AI 레포의 docker-compose 가 띄우는 PostgreSQL 을 공유한다.
+    # 스키마 분리: public = Spring 소유, ai = AI 서비스 소유.
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/sales_hunter}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+  jpa:
+    # 스키마는 Flyway 가 소유한다. Hibernate 가 테이블을 만들지 않게 한다.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        default_schema: public
+
+  flyway:
+    enabled: true
+    schemas: public
+    locations: classpath:db/migration
+    # public 스키마에 AI 레포 init_db.sql 이 만든 _isolation_probe 가 이미 있어서
+    # baseline 없이는 "Found non-empty schema" 로 실패한다.
+    baseline-on-migrate: true
+
+  mvc:
+    problemdetails:
+      enabled: true
+
+  http:
+    client:
+      # AI 호출 타임아웃. LLM 잡은 시작만 시키고 폴링으로 확인하므로 요청 자체는 짧게 끊는다.
+      connect-timeout: 3s
+      read-timeout: 30s
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api/v1
+
+# AI 서비스(FastAPI + LangGraph). Spring 은 /internal/ai/* 로만 호출한다.
+ai:
+  base-url: ${AI_BASE_URL:http://localhost:8000}
+
+# FE 개발 서버. CORS 허용 출처.
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
