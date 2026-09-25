@@ -25,6 +25,9 @@ spring:
     # public 스키마에 AI 레포 init_db.sql 이 만든 _isolation_probe 가 이미 있어서
     # baseline 없이는 "Found non-empty schema" 로 실패한다.
     baseline-on-migrate: true
+    # baseline-version 기본값이 1 이라 그대로 두면 V1 을 "이미 적용됨"으로 보고 건너뛴다.
+    # 0 으로 내려야 V1 부터 실제로 돈다.
+    baseline-version: 0
 
   mvc:
     problemdetails:
