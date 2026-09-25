@@ -39,3 +39,6 @@ out/
 ### Project ###
 application-local.yml
 .env
+
+### Claude Code 작업용 (커밋하지 않는다) ###
+.claude-context/
