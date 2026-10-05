@@ -47,6 +47,8 @@ server:
 # AI 서비스(FastAPI + LangGraph). Spring 은 /internal/ai/* 로만 호출한다.
 ai:
   base-url: ${AI_BASE_URL:http://localhost:8000}
+  # AI 내부 API 공유 시크릿. 운영에서는 환경변수로 덮어쓴다
+  internal-token: ${AI_INTERNAL_TOKEN:dev-internal-token}
 
 # FE 개발 서버. CORS 허용 출처.
 cors:
