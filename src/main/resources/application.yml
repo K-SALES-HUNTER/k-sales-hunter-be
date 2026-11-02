@@ -33,6 +33,12 @@ spring:
     problemdetails:
       enabled: true
 
+  servlet:
+    multipart:
+      # 상세페이지 이미지 직접 업로드. 상품 사진 원본 기준
+      max-file-size: 10MB
+      max-request-size: 12MB
+
   http:
     client:
       # AI 호출 타임아웃. LLM 잡은 시작만 시키고 폴링으로 확인하므로 요청 자체는 짧게 끊는다.
@@ -47,6 +53,11 @@ server:
 # AI 서비스(FastAPI + LangGraph). Spring 은 /internal/ai/* 로만 호출한다.
 ai:
   base-url: ${AI_BASE_URL:http://localhost:8000}
+
+# 업로드·AI 생성 이미지 저장 위치. AI 서비스의 DEV_BFF_UPLOAD_DIR 과 같은 디렉터리를 가리켜야 한다.
+# (AI 가 참고 사진을 여기서 읽고, 생성 이미지를 여기에 쓴다. URL 은 둘 다 /api/v1/uploads/{name})
+storage:
+  upload-dir: ${UPLOAD_DIR:../k-sales-hunter-ai/uploads}
 
 # FE 개발 서버. CORS 허용 출처.
 cors:
